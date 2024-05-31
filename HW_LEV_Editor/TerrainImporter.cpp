@@ -33,9 +33,14 @@ void ImportFromObj(HWTerrain* terr, string path)
 			TerrainPoint* p = terr->terrainPoints.at(i * terr->width + j);
 			p->Height = myObj->verts[i * terr->width + j].y * ScaleUp;
 			
-			// and set the Material (Mat) property which is an 0-255 value equal to the index
-			// ... of the material in the level .cfg file 
-			p->Mat = p->Mat = myObj->verts[i  * terr->width + j].mat_index;
+			// and set the Material (Mat) property. This is a value n=0-254 which corresponds 
+			// ... to the nth row in the .cfg file's ground textures. If p->Mat is 
+			// ... equal to 255 (the default value) this means do NOT update the index
+			// .. e.g. retain the existing as per the .lev
+			// NOTE - you'll need to set the texture order in the .mtl file the same as the .cfg file
+			if (value != 255) {
+				p->Mat = myObj->verts[i  * terr->width + j].mat_index;
+			}
 
 			if (p->Height > maxH)
 				maxH = p->Height;
