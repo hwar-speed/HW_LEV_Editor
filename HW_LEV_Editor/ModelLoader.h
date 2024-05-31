@@ -17,17 +17,13 @@ struct Vert
 	Vector3 pos;
 	Vector2 uv;
 	Vector3 norm;
-	// material index is a n=0-254 integer equal to the nth row of the .cfg texture list
-	unsigned char mat_index;
 
-	// mat_index is an optional arg, defaults to 255 (255 means do not update, retain existing material index)
-	Vert() : mat_index(255) {} 
-	Vert(Vector3 pos, Vector2 uv, Vector3 norm, unsigned char mat_index = 255)
+	Vert() {}
+	Vert(Vector3 pos, Vector2 uv, Vector3 norm)
 	{
 		this->pos = pos;
 		this->uv = uv;
 		this->norm = norm;
-		this->mat_index = mat_index;
 	}
 };
 
