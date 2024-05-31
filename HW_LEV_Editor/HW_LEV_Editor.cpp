@@ -99,6 +99,23 @@ void EditorImportLevelImageHeight()
 	system("pause");
 }
 
+void EditorImportLevelMaterialIndicies()
+{
+	string tgaPath = "";
+	
+	cout << "Drop a .tga file (all pixels which are not black #00000 will have their material index updated)\n";
+
+	cin.ignore();
+	getline(cin, tgaPath);
+	tgaPath = RemoveQuotes(tgaPath);
+
+	bool success = ImportMaterialFromTga(HWTerrain::myTerrain, tgaPath);
+
+	if (success)
+		cout << ".tga material index import complete!\n";
+	system("pause");
+}
+
 void ExportLevelImageTiles(string path)
 {
 	ExportImageTiles(*HWTerrain::myTerrain, path);
@@ -223,9 +240,10 @@ int main(int argc, char* argv[])
 			<< "7. Modify terrain with .tga heightmap\n"
 			<< "8. Import strata info from .rok (not used right now)\n"
 			<< "9. Import palette from .tga\n\n"
+			<< "10. Import material index from monochromatic .tga\n\n"
 
-			<< "10. Credits\n"
-			<< "11. Quit\n";
+			<< "11. Credits\n"
+			<< "12. Quit\n";
 
 		int choice = -1;
 		cin >> choice;
@@ -251,8 +269,10 @@ int main(int argc, char* argv[])
 			EditorImportStrata();
 		else if (choice == 9)
 			EditorImportPalette();
-
 		else if (choice == 10)
+			EditorImportLevelMaterialIndicies();
+
+		else if (choice == 11)
 			PrintCredits();
 		else
 			editing = false;

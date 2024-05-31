@@ -32,15 +32,6 @@ void ImportFromObj(HWTerrain* terr, string path)
 		{
 			TerrainPoint* p = terr->terrainPoints.at(i * terr->width + j);
 			p->Height = myObj->verts[i * terr->width + j].y * ScaleUp;
-			
-			// and set the Material (Mat) property. This is a value n=0-254 which corresponds 
-			// ... to the nth row in the .cfg file's ground textures. If p->Mat is 
-			// ... equal to 255 (the default value) this means do NOT update the index
-			// .. e.g. retain the existing as per the .lev
-			// NOTE - you'll need to set the texture order in the .mtl file the same as the .cfg file
-			if (value != 255) {
-				p->Mat = myObj->verts[i  * terr->width + j].mat_index;
-			}
 
 			if (p->Height > maxH)
 				maxH = p->Height;
@@ -132,6 +123,69 @@ bool ImportFromTga(HWTerrain* myTerrain, string path)
 		int x = lroundf(px * widthRatio);
 		int y = lroundf(py * heightRatio);
 		points->at(py * terrWidth + px)->Height = heights[y * width + x];
+	}
+
+	heights.clear();
+	pixelData.clear();
+	return true;
+}
+
+vector<unsigned char> pixelData;
+vector<float> heights;
+bool ImportMaterialFromTga(HWTerrain* myTerrain, string path)
+{
+	if (myTerrain == nullptr)
+	{
+		cout << "Terrain is not loaded?\n";
+		return false;
+	}
+
+	unsigned int width = 0, height = 0, pixelSize = 0;
+
+	TGAParams tgaParams;
+	tgaParams.path = path;
+	tgaParams.width = width;
+	tgaParams.height = height;
+	tgaParams.imageType = TGAImageType::UncompressedGrayscale;
+	tgaParams.data = &pixelData;
+
+	bool success = TGA_IO::ReadTGA(tgaParams);
+	if (!success)
+	{
+		pixelData.clear();
+		return false;
+	}
+
+	string choice = "";
+	cout << "\n";
+	cin >> choice;
+    int mat_index_selected;
+
+    // Loop until valid input is provided
+    do {
+        std::cout << "Specify the material index to apply to non-black parts of the TGA? [0/1/2../254]: ";
+        std::cin >> mat_index_selected;
+
+        // Check if input is within the specified range
+        if (mat_index_selected < 0 || mat_index_selected > 254) {
+            std::cout << "Invalid input! Please enter a number between 0 and 254." << std::endl;
+        }
+    } while (mat_index_selected < 0 || mat_index_selected > 254);
+
+	float widthRatio = width / (float)myTerrain->width;
+	float heightRatio = height / (float)myTerrain->height;
+
+	int terrWidth = myTerrain->width;
+	int terrHeight = myTerrain->height;
+
+	vector<TerrainPoint*>* points = &myTerrain->terrainPoints;
+	for (size_t i = 0; i < points->size(); i++)
+	{
+		size_t px = i % terrWidth;
+		size_t py = i / terrWidth;
+		int x = lroundf(px * widthRatio);
+		int y = lroundf(py * heightRatio);
+		points->at(py * terrWidth + px)->Mat = mat_index_selected;
 	}
 
 	heights.clear();

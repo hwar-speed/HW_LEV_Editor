@@ -12,4 +12,5 @@ using namespace std;
 
 void ImportFromObj(HWTerrain* myTerrain, string path);
 bool ImportFromTga(HWTerrain* myTerrain, string path);
+bool ImportMaterialFromTga(HWTerrain* myTerrain, string path);
 bool ImportPaletteFromImage(string filepath);

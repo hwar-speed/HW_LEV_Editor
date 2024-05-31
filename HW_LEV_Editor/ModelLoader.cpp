@@ -90,8 +90,6 @@ void ReadFace(string str, vector<Vert>& verts, vector<Vector3>& positions, vecto
 			three--;
 			four--;
 
-			// no material indexes here as only vertex info in .obj record
-
 			verts.push_back(Vert(positions[one], Vector2(), Vector3()));
 			verts.push_back(Vert(positions[two], Vector2(), Vector3()));
 			verts.push_back(Vert(positions[three], Vector2(), Vector3()));
@@ -120,22 +118,19 @@ void ReadFace(string str, vector<Vert>& verts, vector<Vector3>& positions, vecto
 			ss >> faceData;
 			GetTwoNums(faceData, four, texfour);
 
-			// note extra texone/two/three args are for material indexes
-			verts.push_back(Vert(positions[one], uvs[texone], Vector3(), texone));
-			verts.push_back(Vert(positions[two], uvs[textwo], Vector3(), textwo));
-			verts.push_back(Vert(positions[three], uvs[texthree], Vector3(), texthree));
+			verts.push_back(Vert(positions[one], uvs[texone], Vector3()));
+			verts.push_back(Vert(positions[two], uvs[textwo], Vector3()));
+			verts.push_back(Vert(positions[three], uvs[texthree], Vector3()));
 
-			// note extra texone/two/three args are for material indexes
-			verts.push_back(Vert(positions[three], uvs[texthree], Vector3(), texthree));
-			verts.push_back(Vert(positions[four], uvs[texfour], Vector3(), texfour));
-			verts.push_back(Vert(positions[one], uvs[texone], Vector3(), textone));
+			verts.push_back(Vert(positions[three], uvs[texthree], Vector3()));
+			verts.push_back(Vert(positions[four], uvs[texfour], Vector3()));
+			verts.push_back(Vert(positions[one], uvs[texone], Vector3()));
 		}
 		else // 3
 		{
-			// final tex arg is material index
-			ss >> faceData; GetTwoNums(faceData, in, tex); verts.push_back(Vert(positions[in], uvs[tex], Vector3(), tex));
-			ss >> faceData; GetTwoNums(faceData, in, tex); verts.push_back(Vert(positions[in], uvs[tex], Vector3(), tex));
-			ss >> faceData; GetTwoNums(faceData, in, tex); verts.push_back(Vert(positions[in], uvs[tex], Vector3(), tex));
+			ss >> faceData; GetTwoNums(faceData, in, tex); verts.push_back(Vert(positions[in], uvs[tex], Vector3()));
+			ss >> faceData; GetTwoNums(faceData, in, tex); verts.push_back(Vert(positions[in], uvs[tex], Vector3()));
+			ss >> faceData; GetTwoNums(faceData, in, tex); verts.push_back(Vert(positions[in], uvs[tex], Vector3()));
 		}
 		break;
 
@@ -154,21 +149,19 @@ void ReadFace(string str, vector<Vert>& verts, vector<Vector3>& positions, vecto
 			if (uvs.size() == 0)
 				uvs.push_back(Vector2());
 
-			// final arg is material index
-			verts.push_back(Vert(positions[one], uvs[texone], normals[normone], texone));
-			verts.push_back(Vert(positions[two], uvs[textwo], normals[normtwo], textwo));
-			verts.push_back(Vert(positions[three], uvs[texthree], normals[normthree], texthree));
+			verts.push_back(Vert(positions[one], uvs[texone], normals[normone]));
+			verts.push_back(Vert(positions[two], uvs[textwo], normals[normtwo]));
+			verts.push_back(Vert(positions[three], uvs[texthree], normals[normthree]));
 
-			verts.push_back(Vert(positions[three], uvs[texthree], normals[normthree], texthree));
-			verts.push_back(Vert(positions[four], uvs[texfour], normals[normfour], texfour));
-			verts.push_back(Vert(positions[one], uvs[texone], normals[normone], texone));
+			verts.push_back(Vert(positions[three], uvs[texthree], normals[normthree]));
+			verts.push_back(Vert(positions[four], uvs[texfour], normals[normfour]));
+			verts.push_back(Vert(positions[one], uvs[texone], normals[normone]));
 		}
 		else // 3
 		{
-			// final arg is material index
-			ss >> faceData; GetThreeNums(faceData, in, tex, norm); verts.push_back(Vert(positions[in], uvs[tex], normals[norm], tex));
-			ss >> faceData; GetThreeNums(faceData, in, tex, norm); verts.push_back(Vert(positions[in], uvs[tex], normals[norm], tex));
-			ss >> faceData; GetThreeNums(faceData, in, tex, norm); verts.push_back(Vert(positions[in], uvs[tex], normals[norm], tex));
+			ss >> faceData; GetThreeNums(faceData, in, tex, norm); verts.push_back(Vert(positions[in], uvs[tex], normals[norm]));
+			ss >> faceData; GetThreeNums(faceData, in, tex, norm); verts.push_back(Vert(positions[in], uvs[tex], normals[norm]));
+			ss >> faceData; GetThreeNums(faceData, in, tex, norm); verts.push_back(Vert(positions[in], uvs[tex], normals[norm]));
 		}
 		break;
 
