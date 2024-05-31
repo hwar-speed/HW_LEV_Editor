@@ -32,6 +32,10 @@ void ImportFromObj(HWTerrain* terr, string path)
 		{
 			TerrainPoint* p = terr->terrainPoints.at(i * terr->width + j);
 			p->Height = myObj->verts[i * terr->width + j].y * ScaleUp;
+			
+			// and set the Material (Mat) property which is an 0-255 value equal to the index
+			// ... of the material in the level .cfg file 
+			p->Mat = p->Mat = myObj->verts[i  * terr->width + j].mat_index;
 
 			if (p->Height > maxH)
 				maxH = p->Height;
