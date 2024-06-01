@@ -158,7 +158,6 @@ bool ImportMaterialFromTga(HWTerrain* myTerrain, string path)
 
 	// store the direct 0-255 pixel data
 	float var;
-	int index;
 	mat_indicies.resize(tgaParams.width * tgaParams.height);
 	for (size_t i = 0; i < mat_indicies.size(); i++)
 	{
@@ -171,7 +170,6 @@ bool ImportMaterialFromTga(HWTerrain* myTerrain, string path)
     int mat_index_selected;
 
     // Loop until valid input is provided
-	int mat_index;
     do {
         std::cout << "Specify the material index to apply to non-black parts of the TGA? [0/1/2../254]: ";
         std::cin >> mat_index_selected;
