@@ -130,8 +130,8 @@ bool ImportFromTga(HWTerrain* myTerrain, string path)
 	return true;
 }
 
-vector<unsigned char> pixelData;
-vector<float> heights;
+vector<unsigned char> pixelData2;
+vector<float> mat_indicies;
 bool ImportMaterialFromTga(HWTerrain* myTerrain, string path)
 {
 	if (myTerrain == nullptr)
@@ -147,21 +147,31 @@ bool ImportMaterialFromTga(HWTerrain* myTerrain, string path)
 	tgaParams.width = width;
 	tgaParams.height = height;
 	tgaParams.imageType = TGAImageType::UncompressedGrayscale;
-	tgaParams.data = &pixelData;
+	tgaParams.data = &pixelData2;
 
 	bool success = TGA_IO::ReadTGA(tgaParams);
 	if (!success)
 	{
-		pixelData.clear();
+		pixelData2.clear();
 		return false;
 	}
 
-	string choice = "";
-	cout << "\n";
-	cin >> choice;
+	// store the direct 0-255 pixel data
+	float var;
+	int index;
+	mat_indicies.resize(tgaParams.width * tgaParams.height);
+	for (size_t i = 0; i < mat_indicies.size(); i++)
+	{
+		int x = i % tgaParams.width;
+		int y = i / tgaParams.height;
+		var = pixelData2[i * tgaParams.pixelSize];
+		mat_indicies[(tgaParams.height - y - 1) * tgaParams.width + x] = var;
+
+	}
     int mat_index_selected;
 
     // Loop until valid input is provided
+	int mat_index;
     do {
         std::cout << "Specify the material index to apply to non-black parts of the TGA? [0/1/2../254]: ";
         std::cin >> mat_index_selected;
@@ -172,23 +182,28 @@ bool ImportMaterialFromTga(HWTerrain* myTerrain, string path)
         }
     } while (mat_index_selected < 0 || mat_index_selected > 254);
 
-	float widthRatio = width / (float)myTerrain->width;
-	float heightRatio = height / (float)myTerrain->height;
+	float widthRatio = tgaParams.width / (float)myTerrain->width;
+	float heightRatio = tgaParams.height / (float)myTerrain->height;
 
 	int terrWidth = myTerrain->width;
 	int terrHeight = myTerrain->height;
 
 	vector<TerrainPoint*>* points = &myTerrain->terrainPoints;
+	float pixel_data_at_this_point;
 	for (size_t i = 0; i < points->size(); i++)
 	{
 		size_t px = i % terrWidth;
 		size_t py = i / terrWidth;
 		int x = lroundf(px * widthRatio);
 		int y = lroundf(py * heightRatio);
-		points->at(py * terrWidth + px)->Mat = mat_index_selected;
+		pixel_data_at_this_point = mat_indicies[(tgaParams.height - y - 1) * tgaParams.width + x];
+		if (pixel_data_at_this_point > 0)
+		{
+			points->at(py * terrWidth + px)->Mat = mat_index_selected;
+		}
 	}
 
-	heights.clear();
+	mat_indicies.clear();
 	pixelData.clear();
 	return true;
 }

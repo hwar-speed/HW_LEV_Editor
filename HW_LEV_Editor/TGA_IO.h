@@ -26,6 +26,7 @@ public:
     string path;
     unsigned int width;
     unsigned int height;
+    unsigned int pixelSize;
     TGAImageType imageType;
     vector<unsigned char> *data;
 

@@ -160,6 +160,7 @@ bool TGA_IO::ReadTGA(TGAParams& params)
     int pixelSize = (int)ceill(imageSpec.pixelDepth / 8.0f); // e.g. 15 / 8 = 1.875, ceil(1.875) = 2 bytes per pixel
 
     size_t bytesTotal = imageSpec.width * imageSpec.height * pixelSize;
+    params.pixelSize = pixelSize;
     params.data->resize(bytesTotal);
     fread(params.data->data(), bytesTotal, 1, read);
 
